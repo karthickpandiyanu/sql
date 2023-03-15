@@ -1,0 +1,12 @@
+Select employee salary and dept id are same
+
+with salary_same as (
+select salary, dept_id
+from employee_salary
+group_by salary, dept_id
+having count(1) > 1
+)
+select emp.* from employee_salary es
+inner join  salary_same ss on
+es.dept_id = ss.dept_id and
+es.salary = ss.salary
