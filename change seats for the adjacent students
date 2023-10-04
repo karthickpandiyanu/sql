@@ -1,0 +1,54 @@
+Hi Everyone,
+
+Here is a solution to a very exciting yet challenging problem shared by Ankit Bansal on his Instagram Channel.
+
+Problem Description: Please check the image shared.
+
+
+Write a query to change seats for the adjacent students & If the number of students is odd, there is no need to change the last one’s seat.
+
+Create Statement:
+
+CREATE TABLE Seats_Table (
+  Id INT PRIMARY KEY,
+  Student CHAR(1)
+);
+
+
+Insert Statement:
+
+INSERT INTO Seats_Table (Id, Student)
+VALUES
+  (1, 'A'),
+  (2, 'D'),
+  (3, 'E'),
+  (4, 'G'),
+  (5, 'J');
+
+
+
+'Solution_To_Problem' :
+
+Approach 1 :-
+
+
+With SeatCTE as (
+  Select Id, Student,
+    Lead(Student) Over (Order by Id) as NextStudent
+  from Seats_Table
+)
+
+Select Id,
+  Case When Id % 2 = 1 and NextStudent is Not Null Then NextStudent
+    When Id % 2 = 0 Then (Select Student from SeatCTE where Id = s.Id - 1)
+    Else Student
+  End as Student
+from SeatCTE s;
+
+Approach 2 :-
+
+Select id, 
+  IsNull(Case when id%2 =1 
+  then lead(student) over (order by id)
+  else lag (student) over (order by id) end, student) as new 
+from Seats_Table
